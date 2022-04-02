@@ -13,8 +13,8 @@ import matplotlib.pyplot as plt
 import yfinance as yf
 import backtrader as bt
 import pyfolio as pf
-from backtesting.strategy.trend import SmaCrossover
-from backtesting.strategy.mean_reversion import SimpleMeanReversion
+from backtesting.strategy.trend import *
+from backtesting.strategy.mean_reversion import *
 from backtesting.create_portfolio import create_portfolio
 from backtesting.run_analyser import TradeClosed
 

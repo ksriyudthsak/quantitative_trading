@@ -1,6 +1,6 @@
 import dash_core_components as dcc
 import dash_html_components as dhc
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 import dash_table
 import plotly.express as px
 import plotly.graph_objects as go
@@ -20,8 +20,8 @@ layout = dhc.Div([
             dhc.Label('Strategy'),
             dcc.Dropdown(
                 id = 'strategy',
-                options = [{'label': i, 'value': i} for i in ['SmaCrossover', 'SimpleMeanReversion', 'Momentum']],
-                value = 'SmaCrossover',
+                options = [{'label': i, 'value': i} for i in ['SmaCrossOver', 'EmaCrossOver', 'EmaSmaCrossOver', 'SmaCrossUpStopLoss', 'SimpleMeanReversion', 'Momentum']],
+                value = 'SmaCrossOver',
                 style={
                     'width': '100%','float': 'left','margin': 'auto'
                     }
@@ -106,8 +106,14 @@ layout = dhc.Div([
         ], 
         className='row'
     ),
+    dhc.Div(dhc.Div([
+        dhc.Button('RUN Backtest', id='button1', n_clicks=0,
+        style={'backgroundColor': '#3C3330', 'color':'white','font-size': '12px', 'width': '300px', 'display': 'inline-block', 'margin-bottom': '10px', 'margin-right': '5px', 'height':'37px', 'verticalAlign': 'top'}),
+        ]), className='row'
+    ),
     dhc.Div(
         [
+            dhc.Label('trading_result'),
             dcc.Graph(
                 id='graph1',
                 figure={
@@ -146,16 +152,19 @@ layout = dhc.Div([
         Output('table1', 'columns'),
         Output('image1', 'src')
     ], [
-        Input('instrument', 'value'),
-        Input('strategy', 'value'),
-        Input('start_date', 'value'),
-        Input('start_date_oos', 'value'),
-        Input('end_date', 'value'),
-        Input('cash', 'value'),
-        Input('commission', 'value'),
-        Input('slippage', 'value'),
-    ])
-def update_figure(instrument, strategy, start_date, start_date_oos, end_date, cash, commission, slipage):
+        Input('button1', 'n_clicks')],
+        state=[
+            State('instrument', 'value'),
+            State('strategy', 'value'),
+            State('start_date', 'value'),
+            State('start_date_oos', 'value'),
+            State('end_date', 'value'),
+            State('cash', 'value'),
+            State('commission', 'value'),
+            State('slippage', 'value'),
+        ]
+    )
+def update_figure(n_clicks, instrument, strategy, start_date, start_date_oos, end_date, cash, commission, slipage):
     print("start backtest")
     print(instrument, strategy, start_date, end_date, cash, commission, slipage)
 
@@ -207,7 +216,7 @@ def update_figure(instrument, strategy, start_date, start_date_oos, end_date, ca
 
     label_len = len(strat.getindicators_lines())
     for i in range(label_len):   
-        label_name = "{}{}{}".format(strat.getindicators_lines()[i]._getlines()[0],
+        label_name = "{}{}".format(strat.getindicators_lines()[i]._getlines()[0],
                             strat.getindicators_lines()[i].params._getvalues())
         df_indicator[label_name] = strat.getindicators_lines()[i].array.tolist()
         line_label.append(label_name)

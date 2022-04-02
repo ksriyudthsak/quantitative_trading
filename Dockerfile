@@ -40,33 +40,35 @@ RUN pip install pandas
 RUN pip install plotly==4.14.3
 RUN pip install scipy
 RUN pip install dash==1.21.0
+RUN pip install Werkzeug==2.0.0
+# RUN pip install -U dash
 RUN pip install scikit-learn
 RUN pip install pyarrow
 RUN pip install fastparquet
 RUN pip install statsmodels
 RUN pip install psutil
 
-RUN wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz && \
-  tar -xvzf ta-lib-0.4.0-src.tar.gz && \
-  cd ta-lib/ && \
-  ./configure --prefix=/usr && \
-  make && \
-  make install
-RUN pip install TA-Lib
-RUN rm -R ta-lib ta-lib-0.4.0-src.tar.gz
+# RUN wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz && \
+#   tar -xvzf ta-lib-0.4.0-src.tar.gz && \
+#   cd ta-lib/ && \
+#   ./configure --prefix=/usr && \
+#   make && \
+#   make install
+# RUN pip install TA-Lib
+# RUN rm -R ta-lib ta-lib-0.4.0-src.tar.gz
 
 # Use C.UTF-8 locale to avoid issues with ASCII encoding
 ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
 
 # ENV HOME /home/docker
-# Have Jupyter notebooks launch without additional command line options
-RUN jupyter notebook --generate-config && \
-    sed -i -e "/allow_root/ a c.NotebookApp.allow_root = True" ${HOME}/.jupyter/jupyter_notebook_config.py && \
-    sed -i -e "/custom_display_url/ a c.NotebookApp.custom_display_url = \'http://localhost:8888\'" ${HOME}/.jupyter/jupyter_notebook_config.py && \
-    sed -i -e "/c.NotebookApp.ip/ a c.NotebookApp.ip = '*'" ${HOME}/.jupyter/jupyter_notebook_config.py && \
-    sed -i -e "/open_browser/ a c.NotebookApp.open_browser = False" ${HOME}/.jupyter/jupyter_notebook_config.py && \
-    sed -i -e "/c.NotebookApp.token/ a c.NotebookApp.token = ''" ${HOME}/.jupyter/jupyter_notebook_config.py
+# # Have Jupyter notebooks launch without additional command line options
+# RUN jupyter notebook --generate-config && \
+#     sed -i -e "/allow_root/ a c.NotebookApp.allow_root = True" ${HOME}/.jupyter/jupyter_notebook_config.py && \
+#     sed -i -e "/custom_display_url/ a c.NotebookApp.custom_display_url = \'http://localhost:8888\'" ${HOME}/.jupyter/jupyter_notebook_config.py && \
+#     sed -i -e "/c.NotebookApp.ip/ a c.NotebookApp.ip = '*'" ${HOME}/.jupyter/jupyter_notebook_config.py && \
+#     sed -i -e "/open_browser/ a c.NotebookApp.open_browser = False" ${HOME}/.jupyter/jupyter_notebook_config.py && \
+#     sed -i -e "/c.NotebookApp.token/ a c.NotebookApp.token = ''" ${HOME}/.jupyter/jupyter_notebook_config.py
 
 RUN chown -R --from=root docker ${HOME}
 
